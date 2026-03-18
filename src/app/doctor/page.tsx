@@ -5,6 +5,8 @@ import { supabase } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { CalendarDays, Users, FileText, TrendingUp } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export default function DoctorDashboard() {
   const router = useRouter()
   const [user, setUser] = useState<any>(null)
