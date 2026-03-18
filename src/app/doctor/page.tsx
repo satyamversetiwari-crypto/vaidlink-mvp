@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { CalendarDays, Users, FileText, TrendingUp } from 'lucide-react'
 
@@ -14,7 +14,7 @@ export default function DoctorDashboard() {
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await createClient().auth.getUser()
       
       if (!user) {
         router.push('/login')
@@ -29,7 +29,7 @@ export default function DoctorDashboard() {
   }, [router])
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
+    await createClient().auth.signOut()
     router.push('/login')
   }
 
