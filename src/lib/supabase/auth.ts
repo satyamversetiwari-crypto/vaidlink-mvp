@@ -1,7 +1,7 @@
-import type { Database } from '@/types/supabase'
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 
 export const signUp = async (email: string, password: string) => {
+  const supabase = createClient()
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -10,6 +10,7 @@ export const signUp = async (email: string, password: string) => {
 }
 
 export const signIn = async (email: string, password: string) => {
+  const supabase = createClient()
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -18,18 +19,13 @@ export const signIn = async (email: string, password: string) => {
 }
 
 export const signOut = async () => {
+  const supabase = createClient()
   const { error } = await supabase.auth.signOut()
   return { error }
 }
 
-export const resetPassword = async (email: string) => {
-  const { data, error } = await supabase.auth.resetPasswordForEmail(email)
-  return { data, error }
-}
-
-export const updatePassword = async (newPassword: string) => {
-  const { data, error } = await supabase.auth.updateUser({
-    password: newPassword,
-  })
-  return { data, error }
+export const getUser = async () => {
+  const supabase = createClient()
+  const { data: { user }, error } = await supabase.auth.getUser()
+  return { user, error }
 }
