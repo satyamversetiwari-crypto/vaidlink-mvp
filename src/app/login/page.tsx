@@ -1,11 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { CheckCircle, Shield, Zap, Eye, EyeOff } from 'lucide-react'
 
-export default function LoginPage() {
+function LoginContent() {
   const [activeTab, setActiveTab] = useState<'patient' | 'doctor'>('patient')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [otpSent, setOtpSent] = useState(false)
@@ -779,5 +779,26 @@ export default function LoginPage() {
         }
       `}</style>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div style={{ 
+        minHeight: '100vh', 
+        background: '#faf7f2',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontFamily: 'Figtree, sans-serif',
+        fontSize: '14px',
+        color: '#7a8c78'
+      }}>
+        Loading...
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   )
 }
