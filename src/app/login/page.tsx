@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
-import { CheckCircle, Shield, Zap } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { CheckCircle, Shield, Zap, Eye, EyeOff } from 'lucide-react'
 
 export default function LoginPage() {
   const [activeTab, setActiveTab] = useState<'patient' | 'doctor'>('patient')
@@ -12,10 +12,14 @@ export default function LoginPage() {
   const [otp, setOtp] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [authError, setAuthError] = useState('')
+  const [forgotMode, setForgotMode] = useState(false)
 
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const isRegistered = searchParams.get('registered') === 'true'
 
   const handleSendOTP = () => {
     // TODO: Implement OTP sending logic
@@ -60,6 +64,26 @@ export default function LoginPage() {
       <style>{`
         .login-page * { font-family: 'Figtree', sans-serif; }
         .display-text { font-family: 'Cormorant Garamond', serif; }
+        #signin-btn {
+          background-color: #214a3a !important;
+          color: #ffffff !important;
+          border: none !important;
+          border-radius: 10px !important;
+          padding: 14px !important;
+          font-size: 15px !important;
+          font-weight: 600 !important;
+          cursor: pointer !important;
+          transition: all 0.3s ease !important;
+        }
+        #signin-btn:hover:not(:disabled) {
+          background-color: #1a3a2d !important;
+          transform: translateY(-2px) !important;
+          box-shadow: 0 4px 12px rgba(33, 74, 58, 0.15) !important;
+        }
+        #signin-btn:disabled {
+          opacity: 0.55 !important;
+          cursor: not-allowed !important;
+        }
       `}</style>
       {/* LEFT PANEL */}
       <div style={{
@@ -450,6 +474,36 @@ export default function LoginPage() {
 
           {activeTab === 'doctor' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {isRegistered && (
+                <div style={{
+                  background: '#214a3a',
+                  border: 'none',
+                  borderRadius: '10px',
+                  padding: '12px 16px',
+                  fontSize: '13px',
+                  color: '#ffffff',
+                  marginBottom: '24px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  fontWeight: '500',
+                  letterSpacing: '0.01em'
+                }}>
+                  <span style={{ 
+                    background: 'rgba(255,255,255,0.2)', 
+                    borderRadius: '50%',
+                    width: '20px', 
+                    height: '20px',
+                    display: 'flex', 
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '11px',
+                    flexShrink: 0
+                  }}>✓</span>
+                  <span>Account created successfully. Please sign in.</span>
+                </div>
+              )}
+
               <div>
                 <label style={{
                   display: 'block',
@@ -502,35 +556,169 @@ export default function LoginPage() {
                 }}>
                   Password
                 </label>
-                <input
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '12px 14px',
-                    borderRadius: '9px',
-                    border: '1.5px solid rgba(33, 74, 58, 0.15)',
-                    background: '#faf7f2',
-                    fontSize: '14px',
-                    color: '#141c14',
-                    outline: 'none',
-                    fontFamily: "'Figtree', sans-serif",
-                    boxSizing: 'border-box'
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#214a3a'
-                    e.target.style.background = 'white'
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'rgba(33, 74, 58, 0.15)'
-                    e.target.style.background = '#faf7f2'
-                  }}
-                />
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    style={{
+                      width: '100%',
+                      padding: '12px 14px',
+                      borderRadius: '9px',
+                      border: '1.5px solid rgba(33, 74, 58, 0.15)',
+                      background: '#faf7f2',
+                      fontSize: '14px',
+                      color: '#141c14',
+                      outline: 'none',
+                      fontFamily: "'Figtree', sans-serif",
+                      boxSizing: 'border-box',
+                      paddingRight: '40px'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#214a3a'
+                      e.target.style.background = 'white'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(33, 74, 58, 0.15)'
+                      e.target.style.background = '#faf7f2'
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: 'absolute',
+                      right: '12px',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      color: '#214a3a',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '4px'
+                    }}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </div>
 
+              <div style={{ textAlign: 'right', marginTop: '-8px', marginBottom: '16px' }}>
+                <button
+                  type="button"
+                  onClick={() => setForgotMode(true)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    fontSize: '12px',
+                    color: '#7a8c78',
+                    cursor: 'pointer',
+                    fontFamily: 'Figtree, sans-serif',
+                    textDecoration: 'underline',
+                    textDecorationColor: 'rgba(33,74,58,0.25)',
+                    textUnderlineOffset: '2px',
+                    padding: '0'
+                  }}
+                >
+                  Forgot password?
+                </button>
+              </div>
+
+              {forgotMode && (
+                <div style={{
+                  background: '#fff',
+                  border: '1.5px solid rgba(33,74,58,0.15)',
+                  borderRadius: '12px',
+                  padding: '16px',
+                  marginBottom: '16px',
+                  boxShadow: '0 4px 20px rgba(33,74,58,0.1)'
+                }}>
+                  <p style={{
+                    fontSize: '12px',
+                    color: '#7a8c78',
+                    marginBottom: '12px',
+                    lineHeight: '1.5'
+                  }}>
+                    Enter your email to receive a reset link.
+                  </p>
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    id="reset-email-input"
+                    style={{
+                      width: '100%',
+                      padding: '11px 13px',
+                      border: '1.5px solid rgba(33,74,58,0.15)',
+                      borderRadius: '8px',
+                      background: '#faf7f2',
+                      fontFamily: 'Figtree, sans-serif',
+                      fontSize: '13px',
+                      color: '#141c14',
+                      outline: 'none',
+                      marginBottom: '10px',
+                      boxSizing: 'border-box'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#214a3a'
+                      e.target.style.background = 'white'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(33,74,58,0.15)'
+                      e.target.style.background = '#faf7f2'
+                    }}
+                  />
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button
+                      onClick={async () => {
+                        const emailEl = document.getElementById('reset-email-input') as HTMLInputElement
+                        if (!emailEl?.value) return
+                        const supabase = createClient()
+                        await supabase.auth.resetPasswordForEmail(emailEl.value, {
+                          redirectTo: window.location.origin + '/doctor/reset-password'
+                        })
+                        setForgotMode(false)
+                        alert('Reset link sent. Check your email.')
+                      }}
+                      style={{
+                        flex: 1,
+                        padding: '10px',
+                        backgroundColor: '#214a3a',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        fontFamily: 'Figtree, sans-serif'
+                      }}
+                    >
+                      Send Link
+                    </button>
+                    <button
+                      onClick={() => setForgotMode(false)}
+                      style={{
+                        padding: '10px 14px',
+                        backgroundColor: 'transparent',
+                        color: '#7a8c78',
+                        border: '1px solid rgba(33,74,58,0.15)',
+                        borderRadius: '8px',
+                        fontSize: '13px',
+                        cursor: 'pointer',
+                        fontFamily: 'Figtree, sans-serif'
+                      }}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
               <button
+                id="signin-btn"
                 onClick={handleDoctorLogin}
                 disabled={!email.trim() || !password.trim() || loading}
                 style={{
@@ -557,10 +745,25 @@ export default function LoginPage() {
                 </p>
               )}
 
-              <p style={{ fontSize: '12px', color: '#9aaa94', textAlign: 'center', marginTop: '16px', lineHeight: '1.6' }}>
-                New doctor? Contact us at{' '}
-                <a href="mailto:hello@vaidlink.in" style={{ color: '#214a3a', fontWeight: '600', textDecoration: 'none' }}>
-                  hello@vaidlink.in
+              <p style={{ 
+                fontSize: '13px', 
+                color: '#7a8c78', 
+                textAlign: 'center', 
+                marginTop: '20px',
+                lineHeight: '1.6'
+              }}>
+                New doctor?{' '}
+                <a 
+                  href="/doctor/register" 
+                  style={{ 
+                    color: '#214a3a', 
+                    fontWeight: '600', 
+                    textDecoration: 'underline',
+                    textDecorationColor: 'rgba(33,74,58,0.3)',
+                    textUnderlineOffset: '3px'
+                  }}
+                >
+                  Register your account today
                 </a>
               </p>
             </div>
