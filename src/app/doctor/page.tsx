@@ -44,66 +44,86 @@ export default function DoctorDashboard() {
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#faf7f2' }}>
       {/* NAVBAR */}
-      <div style={{
-        width: '100%',
+      <header style={{
+        borderBottom: '0.5px solid rgba(33,74,58,0.12)',
+        background: '#faf7f2',
+        padding: '0 40px',
         height: '60px',
-        backgroundColor: '#214a3a',
-        padding: '0 32px',
         display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        boxSizing: 'border-box'
+        justifyContent: 'space-between',
+        position: 'sticky',
+        top: 0,
+        zIndex: 100
       }}>
-        {/* Left: Logo */}
-        <img 
-          src="/vaidlink-logo.dark.svg" 
-          alt="Vaidlink Logo" 
-          style={{ height: '70px', width: 'auto' }}
+        <img
+          src="/vaidlink-logo.light.svg"
+          alt="Vaidlink"
+          style={{ 
+            height: '75px', 
+            width: 'auto',
+            backgroundColor: 'transparent'
+          }}
         />
-
-        {/* Center: Portal Title */}
-        <div style={{
-          color: 'rgba(255, 255, 255, 0.6)',
-          fontSize: '13px',
-          letterSpacing: '0.1em',
+        
+        <span style={{
+          fontFamily: 'Figtree, sans-serif',
+          fontSize: '11px',
+          fontWeight: '600',
+          letterSpacing: '0.12em',
           textTransform: 'uppercase',
-          fontWeight: '500'
+          color: '#9aaa94'
         }}>
-          Doctor Portal
-        </div>
-
-        {/* Right: User Email + Sign Out */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ color: 'white', fontSize: '13px' }}>
-            {user?.email}
+          Doctor Dashboard
+        </span>
+        
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '16px' 
+        }}>
+          <div style={{
+            width: '34px',
+            height: '34px',
+            borderRadius: '50%',
+            background: '#214a3a',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '13px',
+            fontWeight: '700',
+            color: '#fff',
+            fontFamily: 'Figtree, sans-serif',
+            cursor: 'pointer',
+            flexShrink: 0
+          }}>
+            {user?.email ? user.email[0].toUpperCase() : 'D'}
           </div>
+          <span style={{
+            fontSize: '13px',
+            color: '#7a8c78',
+            fontFamily: 'Figtree, sans-serif'
+          }}>
+            {user?.email}
+          </span>
           <button
             onClick={handleSignOut}
             style={{
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              backgroundColor: 'transparent',
-              color: 'white',
-              padding: '6px 16px',
-              borderRadius: '6px',
-              cursor: 'pointer',
+              padding: '7px 16px',
+              background: 'transparent',
+              border: '0.5px solid rgba(33,74,58,0.25)',
+              borderRadius: '8px',
               fontSize: '13px',
               fontWeight: '500',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent'
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)'
+              color: '#214a3a',
+              cursor: 'pointer',
+              fontFamily: 'Figtree, sans-serif'
             }}
           >
             Sign Out
           </button>
         </div>
-      </div>
+      </header>
 
       {/* MAIN CONTENT */}
       <div style={{
@@ -390,6 +410,7 @@ export default function DoctorDashboard() {
 
             {/* Setup Button */}
             <button
+              onClick={() => router.push('/doctor/setup')}
               style={{
                 width: '100%',
                 marginTop: '20px',
